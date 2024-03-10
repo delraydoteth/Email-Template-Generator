@@ -3,7 +3,7 @@ import Form from 'react-bootstrap/Form';
 
 const CompanyNameInput = ({ companyName, setCompanyName }) => (
 
-  <Form className="mb-3" controlId="companyName">
+  <Form className="mb-3" controlid="companyName">
     <Form.Label>Company Name</Form.Label>
     <Form.Control 
       type="text" 
