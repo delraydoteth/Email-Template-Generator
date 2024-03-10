@@ -1,0 +1,13 @@
+[
+    {
+      "id": "1",
+      "title": "Credit Application Request",
+      "body": "Dear {{companyName}},\n\nWe are writing to request that you complete a credit application to continue our business proceedings. This will help us to provide you with the best service options available.\n\nThank you for your attention to this matter.\n\nBest regards,\n[Your Company Name]"
+    },
+    {
+      "id": "2",
+      "title": "Credit Application Follow-Up",
+      "body": "Dear {{companyName}},\n\nWe recently sent you a credit application and would like to remind you to complete it at your earliest convenience. Completing the application is necessary for us to proceed with our services.\n\nPlease let us know if you have any questions.\n\nWarm regards,\n[Your Company Name]"
+    }
+  ]
+  
