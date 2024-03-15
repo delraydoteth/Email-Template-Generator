@@ -24,16 +24,23 @@ function App() {
     );
   }, [searchTerm]); // Dependency on searchTerm ensures this runs whenever searchTerm changes
 
-  // Update the customized text whenever the selected template or company name changes
   useEffect(() => {
-    if (selectedTemplate && companyName) {
-      const text = customizeTemplate(selectedTemplate.body, companyName);
-      setCustomizedText(text);
-    } else {
-      setCustomizedText(""); // Reset the text if no template is selected or company name is empty
+    let newText = "";
+    // Check if either selectedTemplate or companyName exists
+    if (selectedTemplate || companyName) {
+      // If one is missing, consider how to handle customization partially
+      // For instance, if selectedTemplate is missing, you might not proceed with customization
+      // Similarly, if companyName is missing, decide how to handle the template
+      newText = selectedTemplate && companyName
+        ? customizeTemplate(selectedTemplate.body, companyName) // Both are present
+        : selectedTemplate // Only template is present, without customization
+        ? selectedTemplate.body // Use template body without customization
+        : "Please select a template and enter a company name."; // Prompt for missing info
     }
+    // Update the state
+    setCustomizedText(newText);
   }, [selectedTemplate, companyName]);
-
+  
   // Function to handle copying to clipboard
   const handleCopyToClipboard = () => {
     copyToClipboard(customizedText);
@@ -57,7 +64,6 @@ function App() {
         />
         <TemplateDisplay
           templateText={customizedText}
-          copyToClipboard={handleCopyToClipboard}
         />
       </div>
     </div>
