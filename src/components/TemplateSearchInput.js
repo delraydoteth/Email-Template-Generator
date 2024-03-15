@@ -20,8 +20,6 @@ const TemplateSearchInput = ({ searchTerm, setSearchTerm, templates, setSelected
     const term = e.target.value;
     console.log(`Search term entered: ${term}`); // Log the current search term
     setSearchTerm(term);
-    // Optional: Log the action of updating the searchTerm state
-    console.log(`Search term state updated to: ${term}`);
   };
 
   return (
@@ -33,7 +31,7 @@ const TemplateSearchInput = ({ searchTerm, setSearchTerm, templates, setSelected
         onChange={handleChange}
       />
       {searchTerm && (
-        <ListGroup>
+        <ListGroup style={{ maxHeight: '8rem', overflowY: 'scroll' }}>
           {filterTemplates(searchTerm).map((template) => (
             <ListGroup.Item 
               key={template.id} 

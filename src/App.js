@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./App.css";
 import Header from "./components/Header";
 import CompanyNameInput from "./components/CompanyNameInput";
@@ -10,41 +10,22 @@ import templates from "./templates.json"; // Assuming this is the correct path
 function App() {
   const [companyName, setCompanyName] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedTemplate, setSelectedTemplate] = useState(null); // Initialize as null
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [customizedText, setCustomizedText] = useState("");
 
-  // Adjust the search function to directly update the selected template based on the search term
-  useEffect(() => {
-    const filteredTemplates = templates.filter((template) =>
-      template.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    // Automatically select the first template that matches the search term, if any
-    setSelectedTemplate(
-      filteredTemplates.length > 0 ? filteredTemplates[0] : null
-    );
-  }, [searchTerm]); // Dependency on searchTerm ensures this runs whenever searchTerm changes
+  // Removed useEffect for automatically updating customizedText upon template or company name change
 
-  useEffect(() => {
-    let newText = "";
-    // Check if either selectedTemplate or companyName exists
-    if (selectedTemplate || companyName) {
-      // If one is missing, consider how to handle customization partially
-      // For instance, if selectedTemplate is missing, you might not proceed with customization
-      // Similarly, if companyName is missing, decide how to handle the template
-      newText = selectedTemplate && companyName
-        ? customizeTemplate(selectedTemplate.body, companyName) // Both are present
-        : selectedTemplate // Only template is present, without customization
-        ? selectedTemplate.body // Use template body without customization
-        : "Please select a template and enter a company name."; // Prompt for missing info
+  // Function to manually update customized text when a template is selected
+  const updateCustomizedText = (template) => {
+    // Check if companyName is provided for customization
+    if (template && companyName) {
+      // Customize template with companyName
+      const newText = customizeTemplate(template.body, companyName);
+      setCustomizedText(newText);
+    } else if (template) {
+      // Use template body directly if companyName is not provided
+      setCustomizedText(template.body);
     }
-    // Update the state
-    setCustomizedText(newText);
-  }, [selectedTemplate, companyName]);
-  
-  // Function to handle copying to clipboard
-  const handleCopyToClipboard = () => {
-    copyToClipboard(customizedText);
-    // Here, you could add logic to notify the user that the text has been copied.
   };
 
   return (
@@ -55,12 +36,14 @@ function App() {
           companyName={companyName}
           setCompanyName={setCompanyName}
         />
-        {/* Now, TemplateSearchInput only needs setSearchTerm to update searchTerm state */}
         <TemplateSearchInput
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           templates={templates}
-          setSelectedTemplate={setSelectedTemplate} // Ensure this prop is passed
+          setSelectedTemplate={(template) => {
+            setSelectedTemplate(template);
+            updateCustomizedText(template); // Update customized text only when template is clicked
+          }}
         />
         <TemplateDisplay
           templateText={customizedText}
