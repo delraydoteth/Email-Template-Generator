@@ -4,28 +4,36 @@ import Header from "./components/Header";
 import CompanyNameInput from "./components/CompanyNameInput";
 import TemplateSearchInput from "./components/TemplateSearchInput";
 import TemplateDisplay from "./components/TemplateDisplay";
+import SubjectLine from "./components/SubjectLine"; // Import the SubjectLine component
 import { customizeTemplate, copyToClipboard } from "./components/utilities";
-import templates from "./templates.json"; // Assuming this is the correct path
+import templates from "./templates.json";
 
 function App() {
   const [companyName, setCompanyName] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [customizedText, setCustomizedText] = useState("");
+  const [showDropdown, setShowDropdown] = useState(true);
 
-  // Removed useEffect for automatically updating customizedText upon template or company name change
-
-  // Function to manually update customized text when a template is selected
   const updateCustomizedText = (template) => {
-    // Check if companyName is provided for customization
     if (template && companyName) {
-      // Customize template with companyName
       const newText = customizeTemplate(template.body, companyName);
       setCustomizedText(newText);
     } else if (template) {
-      // Use template body directly if companyName is not provided
       setCustomizedText(template.body);
     }
+  };
+
+  const handleTemplateSelection = (template) => {
+    setSelectedTemplate(template);
+    updateCustomizedText(template);
+    setSearchTerm(template.title);
+    setShowDropdown(false);
+  };
+
+  const handleSearchTermChange = (term) => {
+    setSearchTerm(term);
+    setShowDropdown(true);
   };
 
   return (
@@ -38,13 +46,13 @@ function App() {
         />
         <TemplateSearchInput
           searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
+          setSearchTerm={handleSearchTermChange}
           templates={templates}
-          setSelectedTemplate={(template) => {
-            setSelectedTemplate(template);
-            updateCustomizedText(template); // Update customized text only when template is clicked
-          }}
+          setSelectedTemplate={handleTemplateSelection}
+          showDropdown={showDropdown}
         />
+        <SubjectLine companyName={companyName} /> {/* Display the SubjectLine component */}
+
         <TemplateDisplay
           templateText={customizedText}
         />

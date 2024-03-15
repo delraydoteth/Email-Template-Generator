@@ -1,25 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import ListGroup from 'react-bootstrap/ListGroup';
 
-const TemplateSearchInput = ({ searchTerm, setSearchTerm, templates, setSelectedTemplate }) => {
-  
-  console.log("Templates received in TemplateSearchInput:", templates); // Log the templates received
+const TemplateSearchInput = ({ searchTerm, setSearchTerm, templates, setSelectedTemplate, selectedTemplate }) => {
+  // State to control visibility of the ListGroup (dropdown)
+  const [showDropdown, setShowDropdown] = useState(true);
 
-  // Inline function for filtering templates based on the search term
-  const filterTemplates = (term) => {
-    const filtered = templates.filter(template =>
-      template.title.toLowerCase().includes(term.toLowerCase())
-    );
-    console.log(`Filtering templates with term "${term}", found ${filtered.length} matches.`); // Log filtering action
-    return filtered;
-  };
+  const filterTemplates = (term) => templates.filter(template =>
+    template.title.toLowerCase().includes(term.toLowerCase())
+  );
 
   const handleChange = (e) => {
-    console.log('Handling change event in search input.'); // Initial log for handling change
-    const term = e.target.value;
-    console.log(`Search term entered: ${term}`); // Log the current search term
-    setSearchTerm(term);
+    setSearchTerm(e.target.value);
+    setShowDropdown(true); // Show dropdown when user edits search term
+  };
+
+  const handleSelect = (template) => {
+    setSelectedTemplate(template);
+    setSearchTerm(template.title); // Update search bar with the selected template's name
+    setShowDropdown(false); // Hide dropdown after selection
+    // Optionally, show a confirmation message to the user here
   };
 
   return (
@@ -30,16 +30,13 @@ const TemplateSearchInput = ({ searchTerm, setSearchTerm, templates, setSelected
         value={searchTerm}
         onChange={handleChange}
       />
-      {searchTerm && (
+      {searchTerm && showDropdown && (
         <ListGroup style={{ maxHeight: '8rem', overflowY: 'scroll' }}>
           {filterTemplates(searchTerm).map((template) => (
             <ListGroup.Item 
               key={template.id} 
               action 
-              onClick={() => {
-                console.log(`Template selected: ${template.title}`); // Log which template was selected
-                setSelectedTemplate(template);
-              }}
+              onClick={() => handleSelect(template)}
             >
               {template.title}
             </ListGroup.Item>
