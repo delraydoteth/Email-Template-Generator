@@ -14,51 +14,47 @@ function App() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [customizedText, setCustomizedText] = useState("");
-  const [emailBody, setEmailBody] = useState(""); // State for holding the edited text for the email body.
+  const [emailBody, setEmailBody] = useState("");
 
-  const updateCustomizedText = (template) => {
-    if (template && companyName) {
-      const newText = customizeTemplate(template.body, companyName);
+  const handleTemplateSelection = (template) => {
+    if (template) {
+      setSelectedTemplate(template);
+      setSearchTerm("");
+      const newText = companyName ? customizeTemplate(template.body, companyName) : template.body;
       setCustomizedText(newText);
-      setEmailBody(newText); // Also update emailBody with the new text.
-    } else if (template) {
-      setCustomizedText(template.body);
-      setEmailBody(template.body); // Also update emailBody with the template body.
+      setEmailBody(newText);
     }
   };
 
-  // This function is called when text changes in TemplateDisplay.
-  const handleEmailBodyChange = (newText) => {
-    setEmailBody(newText); // Update emailBody state with the edited text.
+  const clearTemplateSelection = () => {
+    setSelectedTemplate(null);
+    setCustomizedText("");
+    setEmailBody("");
+    setSearchTerm(""); // Optionally clear the search term as well
   };
+
+  const handleEmailBodyChange = (newText) => {
+    setEmailBody(newText);
+  };
+
+  <SubjectLine companyName={companyName} />
 
   return (
     <div className="App">
       <Header />
-      <div className="container">
-        <CompanyNameInput
-          companyName={companyName}
-          setCompanyName={setCompanyName}
-        />
-        <SubjectLine companyName={companyName} />
+      <div className="app-container shadow">
+        <CompanyNameInput companyName={companyName} setCompanyName={setCompanyName} />
+        
         <TemplateSearchInput
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           templates={templates}
-          setSelectedTemplate={(template) => {
-            setSelectedTemplate(template);
-            updateCustomizedText(template);
-            setSearchTerm(template.title); // This ensures the search bar updates with the template's title.
-          }}
+          selectedTemplate={selectedTemplate}
+          setSelectedTemplate={handleTemplateSelection}
+          clearSelectedTemplate={clearTemplateSelection}
         />
-        <TemplateDisplay
-          templateText={customizedText} // Pass the initial or updated template text.
-          onTextChange={handleEmailBodyChange} // Pass the function to handle text changes.
-        />
-        <OutlookButton 
-          subject={`${companyName.toUpperCase()} - White Cap Credit Application - Additional Information Required`}
-          body={emailBody} // Use the latest email body text, including any edits.
-        />
+        <TemplateDisplay templateText={customizedText} onTextChange={handleEmailBodyChange} />
+        <OutlookButton subject={`${companyName.toUpperCase()} - White Cap Credit Application - Additional Information Required`} body={emailBody} />
       </div>
     </div>
   );

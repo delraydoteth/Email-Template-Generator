@@ -3,7 +3,7 @@ import React from 'react';
 
 const Header = () => (
   <header className="text-center">
-    <h1>WC Template Generator</h1>
+    <h1>New Accounts Templates</h1>
   </header>
 );
 

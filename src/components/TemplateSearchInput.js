@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import ListGroup from 'react-bootstrap/ListGroup';
+import { TiDelete } from 'react-icons/ti'; // Corrected import statement
 
-const TemplateSearchInput = ({ searchTerm, setSearchTerm, templates, setSelectedTemplate, selectedTemplate }) => {
-  // State to control visibility of the ListGroup (dropdown)
+const TemplateSearchInput = ({ searchTerm, setSearchTerm, templates, setSelectedTemplate, selectedTemplate, clearSelectedTemplate }) => {
   const [showDropdown, setShowDropdown] = useState(true);
 
   const filterTemplates = (term) => templates.filter(template =>
@@ -12,36 +12,52 @@ const TemplateSearchInput = ({ searchTerm, setSearchTerm, templates, setSelected
 
   const handleChange = (e) => {
     setSearchTerm(e.target.value);
-    setShowDropdown(true); // Show dropdown when user edits search term
+    setShowDropdown(true);
   };
 
   const handleSelect = (template) => {
     setSelectedTemplate(template);
-    setSearchTerm(template.title); // Update search bar with the selected template's name
-    setShowDropdown(false); // Hide dropdown after selection
-    // Optionally, show a confirmation message to the user here
+    setSearchTerm('');
+    setShowDropdown(false);
+  };
+
+  const badgeStyle = {
+    backgroundColor: '#ffcc33',
+    cursor: 'pointer',
+    height: '38px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '0 12px',
+    borderRadius: '20px',
+    width: '100%', // Ensure badge takes full width
   };
 
   return (
     <div className="mb-3">
-      <Form.Control
-        type="text"
-        placeholder="Search Templates"
-        value={searchTerm}
-        onChange={handleChange}
-      />
-      {searchTerm && showDropdown && (
-        <ListGroup style={{ maxHeight: '8rem', overflowY: 'scroll' }}>
-          {filterTemplates(searchTerm).map((template) => (
-            <ListGroup.Item 
-              key={template.id} 
-              action 
-              onClick={() => handleSelect(template)}
-            >
-              {template.title}
-            </ListGroup.Item>
-          ))}
-        </ListGroup>
+      {selectedTemplate ? (
+        <div style={badgeStyle}>
+          {selectedTemplate.title}
+          <TiDelete onClick={clearSelectedTemplate} style={{ color: '#000', marginLeft: '10px', cursor: 'pointer' }} />
+        </div>
+      ) : (
+        <>
+          <Form.Control
+            type="text"
+            placeholder="Search Templates"
+            value={searchTerm}
+            onChange={handleChange}
+          />
+          {searchTerm && showDropdown && (
+            <ListGroup style={{ maxHeight: '8rem', overflowY: 'scroll' }}>
+              {filterTemplates(searchTerm).map((template) => (
+                <ListGroup.Item key={template.id} action onClick={() => handleSelect(template)}>
+                  {template.title}
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+          )}
+        </>
       )}
     </div>
   );
