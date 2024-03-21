@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import ListGroup from 'react-bootstrap/ListGroup';
-import { TiDelete } from 'react-icons/ti'; // Corrected import statement
+import { TiDelete } from 'react-icons/ti';
 
 const TemplateSearchInput = ({ searchTerm, setSearchTerm, templates, setSelectedTemplate, selectedTemplate, clearSelectedTemplate }) => {
   const [showDropdown, setShowDropdown] = useState(true);
@@ -33,11 +33,16 @@ const TemplateSearchInput = ({ searchTerm, setSearchTerm, templates, setSelected
     width: '100%', // Ensure badge takes full width
   };
 
+  // Style to make text bold
+  const boldTextStyle = {
+    fontWeight: 'bold',
+  };
+
   return (
     <div className="mb-3">
       {selectedTemplate ? (
         <div style={badgeStyle}>
-          {selectedTemplate.title}
+          <span style={boldTextStyle}>{selectedTemplate.title}</span> {/* Apply boldTextStyle */}
           <TiDelete onClick={clearSelectedTemplate} style={{ color: '#000', marginLeft: '10px', cursor: 'pointer' }} />
         </div>
       ) : (
@@ -52,7 +57,7 @@ const TemplateSearchInput = ({ searchTerm, setSearchTerm, templates, setSelected
             <ListGroup style={{ maxHeight: '8rem', overflowY: 'scroll' }}>
               {filterTemplates(searchTerm).map((template) => (
                 <ListGroup.Item key={template.id} action onClick={() => handleSelect(template)}>
-                  {template.title}
+                  <span style={boldTextStyle}>{template.title}</span> {/* Apply boldTextStyle to each template title */}
                 </ListGroup.Item>
               ))}
             </ListGroup>
