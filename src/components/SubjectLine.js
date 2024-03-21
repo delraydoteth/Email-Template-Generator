@@ -4,7 +4,7 @@ import React from 'react';
 const SubjectLine = ({ companyName }) => {
   // Function to capitalize company name and format subject line
   const formatSubjectLine = (name) => {
-    return `${name.toUpperCase()} - White Cap Credit Application - Additional Information Required`;
+    return `${name.toUpperCase()} - White Cap Credit Application - `;
   };
 
   return (
